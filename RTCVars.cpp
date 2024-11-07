@@ -24,9 +24,9 @@ bool RTCVars::registerVar(char *v) {
   return _checkAndReserve((uintptr_t)v, RTC_STATE_TYPE_CHAR);
 }
 
-bool RTCVars::registerVar(byte *v) {
-  return _checkAndReserve((uintptr_t)v, RTC_STATE_TYPE_BYTE);
-}
+//bool RTCVars::registerVar(byte *v) {
+//  return _checkAndReserve((uintptr_t)v, RTC_STATE_TYPE_BYTE);
+//}
 
 bool RTCVars::registerVar(int *v) {
   return _checkAndReserve((uintptr_t)v, RTC_STATE_TYPE_INT);
@@ -40,7 +40,7 @@ bool RTCVars::registerVar(float *v) {
   return _checkAndReserve((uintptr_t)v, RTC_STATE_TYPE_FLOAT);
 }
 
-bool RTCVars::_checkAndReserve(uintptr_t v, byte type_of_var) {
+bool RTCVars::_checkAndReserve(uintptr_t v, int type_of_var) {
   // check if there is enough room for this var
   if ((_state_variables_counter >= RTC_MAX_VARIABLES) || (_state_variable_size[type_of_var] + _state_size >= RTC_MAX_SIZE)) return false;
   // keep the pointer to the var
@@ -70,11 +70,11 @@ void RTCVars::debugOutputRTCVars() {
         Serial.print(F(" is type char: "));
         Serial.println(*vc);
         break;
-      case RTC_STATE_TYPE_BYTE:
-        vb = reinterpret_cast<byte*>(_state_variables_ptr[i]);
-        Serial.print(F(" is type byte: "));
-        Serial.println(*vb);
-        break;
+      //case RTC_STATE_TYPE_BYTE:
+      //  vb = reinterpret_cast<byte*>(_state_variables_ptr[i]);
+      //  Serial.print(F(" is type byte: "));
+      //  Serial.println(*vb);
+      //  break;
       case RTC_STATE_TYPE_INT:
         vi = reinterpret_cast<int*>(_state_variables_ptr[i]);
         Serial.print(F(" is type int: "));
@@ -130,7 +130,7 @@ bool RTCVars::saveToRTC() {
 }
 
 bool RTCVars::loadFromRTC() {
-  DPRINTLN(F(">> call to loadFromRTC"));
+  //DPRINTLN(F(">> call to loadFromRTC"));
   if (!_checkValidRTCData()) return false;
   _last_read_status = RTC_ERROR_READING_FAILED;
   unsigned char buf[_state_size + 1];
@@ -154,7 +154,7 @@ bool RTCVars::loadFromRTC() {
     p += s;
   }
   _last_read_status = RTC_OK;
-  DPRINTLN(F(">> loadFromRTC: all vars restored"));
+  //DPRINTLN(F(">> loadFromRTC: all vars restored"));
   return true;
 }
 
@@ -201,19 +201,19 @@ int RTCVars::getFreeRTCVars() {
   return RTC_MAX_VARIABLES - _state_variables_counter;
 }
 
-byte RTCVars::getStateID() {
+int RTCVars::getStateID() {
   return _state_id;
 }
 
-byte RTCVars::getStateIDFromRTC() {
+int RTCVars::getStateIDFromRTC() {
   if (!_checkValidRTCData()) return RTC_STATE_ID_INVALID;
   return _last_read_state_id;
 }
 
-void RTCVars::setStateID(byte new_state_id) {
+void RTCVars::setStateID(int new_state_id) {
   if (new_state_id != RTC_STATE_ID_INVALID) _state_id = new_state_id;
 }
 
-byte RTCVars::getReadError() {
+int RTCVars::getReadError() {
   return _last_read_status;
 }
